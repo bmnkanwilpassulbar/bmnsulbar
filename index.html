@@ -278,11 +278,27 @@ const daftarRuangan = [
 ];
 
 // 3. Fungsi Navigasi Halaman
+// 4. NAVIGASI HALAMAN
 function showPage(pageId) {
+  // Sembunyikan semua halaman
   document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById(pageId);
-  if(target) target.classList.add('active');
-  if(pageId === 'dashboard') loadChart();
+  
+  // Tampilkan halaman target
+  const page = document.getElementById(pageId);
+  if(page) {
+    page.classList.add('active');
+    
+    // --- TEMPEL BARIS INI (PENTING) ---
+    window.location.hash = pageId; 
+    // ----------------------------------
+  }
+  
+  window.scrollTo(0,0);
+  
+  // Jika ke dashboard, muat chart
+  if(pageId === 'dashboard') {
+    setTimeout(loadChart, 100); 
+  }
 }
 
 // 4. Inisialisasi Tampilan (Grid & Dropdown)
@@ -376,7 +392,21 @@ function loadChart() {
 }
 
 // Jalankan sistem otomatis saat browser dibuka
-window.onload = initSystem;
+// Jalankan sistem saat startup
+window.onload = () => {
+  initSystem();
+  
+  // LOGIKA BARU: Cek apakah ada tanda # di link URL saat pertama buka
+  const hash = window.location.hash.replace('#', '');
+  
+  if (hash) {
+    // Jika ada (misal: ...#laporan), buka halaman tersebut
+    showPage(hash);
+  } else {
+    // Jika tidak ada, default ke beranda
+    showPage('beranda');
+  }
+};
 // DATA CONTOH (Sesuai Struktur Anda)
 const dataAset = {
  "Ruang Ka Kanwil": [
