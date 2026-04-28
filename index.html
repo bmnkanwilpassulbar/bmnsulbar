@@ -280,20 +280,25 @@ const daftarRuangan = [
 // 3. Fungsi Navigasi Halaman
 // 4. NAVIGASI HALAMAN
 function showPage(pageId) {
-  // Sembunyikan semua halaman
+  // 1. Sembunyikan semua halaman
   document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
   
-  // Tampilkan halaman target
+  // 2. Tampilkan halaman yang dipilih
   const page = document.getElementById(pageId);
   if(page) {
     page.classList.add('active');
     
-    // --- INI HARUS ADA AGAR LINK BERUBAH ---
-    window.location.hash = pageId; 
+    // 3. PAKSA UBAH LINK (Menggunakan History API)
+    const newUrl = window.location.pathname + '#' + pageId;
+    window.history.pushState({page: pageId}, '', newUrl);
   }
   
   window.scrollTo(0,0);
-  if(pageId === 'dashboard') loadChart();
+  
+  // Jika ke dashboard, muat chart
+  if(pageId === 'dashboard') {
+    setTimeout(loadChart, 100); 
+  }
 }
 // 4. Inisialisasi Tampilan (Grid & Dropdown)
 function initSystem() {
@@ -387,15 +392,15 @@ function loadChart() {
 
 // Jalankan sistem otomatis saat browser dibuka
 // Jalankan sistem saat startup
-window.onload = () => {
-  initSystem();
-
-  // Logika pengecekan tanda pagar (#)
+// Memastikan link berubah saat tombol Back/Forward browser ditekan
+window.onpopstate = function(event) {
   const hash = window.location.hash.replace('#', '');
   if (hash) {
-    showPage(hash);
-  } else {
-    showPage('beranda');
+    // Jalankan fungsi tanpa pushState lagi agar tidak looping
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(hash);
+    if(page) page.classList.add('active');
+    if(hash === 'dashboard') loadChart();
   }
 };
 // DATA CONTOH (Sesuai Struktur Anda)
