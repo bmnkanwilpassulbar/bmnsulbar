@@ -168,12 +168,12 @@ footer { background:var(--primary); color:white; text-align:center; padding:20px
       <small>Kanwil Ditjenpas Sulbar</small>
     </div>
   </div>
-  <nav>
-     <a onclick="showPage('beranda')">Beranda</a>
-    <a onclick="showPage('database')">Database</a>
-    <a onclick="showPage('laporan')">Lapor Kerusakan</a>
-    <a onclick="showPage('dashboard')">Dashboard</a>
-  </nav>
+<nav>
+  <a href="#beranda" onclick="showPage('beranda')">Beranda</a>
+  <a href="#database" onclick="showPage('database')">Database</a>
+  <a href="#laporan" onclick="showPage('laporan')">Lapor Kerusakan</a>
+  <a href="#dashboard" onclick="showPage('dashboard')">Dashboard</a>
+</nav>
 </header>
 
 <div id="beranda" class="page-content active">
@@ -803,9 +803,14 @@ let currentViewedRoom = "";
 
 // 4. NAVIGASI HALAMAN
 function showPage(pageId) {
+  // Update URL Hash
+  window.location.hash = pageId;
+
+  // Logika pindah halaman yang sudah Anda buat
   document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-  const page = document.getElementById(pageId);
-  if(page) page.classList.add('active');
+  const target = document.getElementById(pageId);
+  if(target) target.classList.add('active');
+  
   window.scrollTo(0,0);
   if(pageId === 'dashboard') loadChart();
 }
@@ -972,5 +977,13 @@ function loadChart() {
   });
 }
 // Jalankan sistem saat startup
-window.onload = initSystem;
+window.onload = function() {
+  initSystem(); // Fungsi inisialisasi Anda yang sudah ada
+
+  // Cek apakah ada hash di URL saat halaman dimuat
+  const currentHash = window.location.hash.replace('#', '');
+  if (currentHash) {
+    showPage(currentHash);
+  }
+};
 </script>
