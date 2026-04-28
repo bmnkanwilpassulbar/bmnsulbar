@@ -288,19 +288,13 @@ function showPage(pageId) {
   if(page) {
     page.classList.add('active');
     
-    // --- TEMPEL BARIS INI (PENTING) ---
+    // --- INI HARUS ADA AGAR LINK BERUBAH ---
     window.location.hash = pageId; 
-    // ----------------------------------
   }
   
   window.scrollTo(0,0);
-  
-  // Jika ke dashboard, muat chart
-  if(pageId === 'dashboard') {
-    setTimeout(loadChart, 100); 
-  }
+  if(pageId === 'dashboard') loadChart();
 }
-
 // 4. Inisialisasi Tampilan (Grid & Dropdown)
 function initSystem() {
   const grid = document.getElementById('gridRuangan');
@@ -395,15 +389,12 @@ function loadChart() {
 // Jalankan sistem saat startup
 window.onload = () => {
   initSystem();
-  
-  // LOGIKA BARU: Cek apakah ada tanda # di link URL saat pertama buka
+
+  // Logika pengecekan tanda pagar (#)
   const hash = window.location.hash.replace('#', '');
-  
   if (hash) {
-    // Jika ada (misal: ...#laporan), buka halaman tersebut
     showPage(hash);
   } else {
-    // Jika tidak ada, default ke beranda
     showPage('beranda');
   }
 };
